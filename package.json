@@ -1,0 +1,28 @@
+{
+  "name": "leverage-signal-engine",
+  "version": "1.0.0",
+  "description": "Daily automation: Notion research → Claude draft → Beehiiv draft post for The Leverage Signal newsletter",
+  "type": "module",
+  "main": "run-daily.js",
+  "scripts": {
+    "start": "node scheduler.js",
+    "daily": "node run-daily.js",
+    "test-notion": "node -e \"import('./lib/notion.js').then(m => m.fetchTodayUpdate().then(r => console.log(JSON.stringify(r,null,2))))\"",
+    "test-anthropic": "node -e \"import('./lib/anthropic.js').then(m => m.testCall().then(console.log))\"",
+    "test-beehiiv": "node -e \"import('./lib/beehiiv.js').then(m => m.testConnection().then(console.log))\"",
+    "test-full-dry": "node run-daily.js --dry-run",
+    "rerun": "node run-daily.js --force-rerun"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.40.0",
+    "@notionhq/client": "^2.3.0",
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.0",
+    "node-cron": "^3.0.3"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "author": "Yuri Kruman / Grand Kru Ventures",
+  "license": "UNLICENSED"
+}
