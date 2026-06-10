@@ -1,8 +1,16 @@
-# Final Stretch: 4 Secrets, 1 Notion Share, 1 Deploy
+# Final Stretch: 4 Secrets + 1 Notion Share
 
-The engine is wired end-to-end. Six env vars are already set on the
-`leverage-signal-engine` Vercel project. The four below are Sensitive
-or interactive: paste them once and the daily cron starts firing.
+The engine is **deployed and live** on Vercel: `https://leverage-signal-engine.vercel.app`.
+The `api/cron/daily` Lambda is registered and gated by `CRON_SECRET` (verified: returns
+401 on unauth, 401 on wrong bearer). The cron schedule in `vercel/vercel.json` is set
+to `30 3 * * 0,1,2,3,4` (06:30 IDT, Sun-Thu, Shabbat-aware).
+
+Six env vars are already set on production. The four below are Sensitive: paste them
+once and the cron starts producing drafts on the next 06:30 IDT weekday.
+
+> Note: until the four secrets below are set, the Lambda will start, fail
+> `validateConfig()`, return 500 to the cron, and write nothing. No drafts go out,
+> nothing breaks. The first **clean** run is the one after you paste these.
 
 ---
 
@@ -65,17 +73,22 @@ printf "db" | vercel env add RESEARCH_SOURCE production
 
 ---
 
-## 3) Deploy (~30 sec)
+## 3) Deploy (already done)
 
+The first production deploy is live (`dpl_9YLAuZbZgVNYGZA1kdUuLxsGbbtK`,
+aliased to `leverage-signal-engine.vercel.app`). Future env-only changes
+do not require a redeploy: Vercel rebuilds automatically on every push
+to `master`, and env updates take effect on the next cron fire.
+
+To redeploy manually any time:
 ```bash
-vercel --prod
+cd C:/Users/yurik/Downloads/leverage-signal-engine && vercel --prod
 ```
 
-Vercel reads `vercel/vercel.json`, sees the cron at `30 3 * * 0,1,2,3,4`
-(03:30 UTC = 06:30 IDT, Sun-Thu), and starts firing the next morning
-automatically. The `api/cron/daily` endpoint rejects any request without
-the matching `CRON_SECRET` Bearer token, so the cron is the only thing
-that can trigger it.
+PowerShell users: ignore the red "node.exe : Vercel CLI 54.x" banner.
+That is PowerShell rendering Vercel's stderr in red even though the
+command succeeded. Look at the `status: ok` JSON at the bottom of the
+output for the real outcome.
 
 ---
 
