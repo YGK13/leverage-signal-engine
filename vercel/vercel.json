@@ -2,8 +2,9 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "crons": [
     {
+      "_comment": "Engine runs at 06:30 Asia/Jerusalem, Sun-Thu (Shabbat-aware). Vercel cron uses UTC: 03:30 UTC = 06:30 IDT (UTC+3). Fires 30 min after the upstream `leverage-brief-daily-research` dispatcher (06:00 IDT) so the engine reads fresh research.",
       "path": "/api/cron/daily",
-      "schedule": "0 10 * * 1-5"
+      "schedule": "30 3 * * 0,1,2,3,4"
     }
   ]
 }

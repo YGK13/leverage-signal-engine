@@ -19,6 +19,14 @@ export const CONFIG = {
   notifyTo: process.env.NOTIFY_EMAIL_TO,
   slackWebhook: process.env.SLACK_WEBHOOK_URL,
 
+  // --- Research source toggle ---
+  // 'page' = original lib/notion.js reader (long-form Research Hub page)
+  // 'db'   = lib/notion-db.js reader (Daily AI Signal database written by the
+  //          upstream `leverage-brief-daily-research` dispatcher)
+  // The DB id is sourced from env or the hardcoded default in lib/notion-db.js.
+  researchSource: (process.env.RESEARCH_SOURCE || 'page'),
+  dailyResearchDsId: process.env.DAILY_RESEARCH_NOTION_DS_ID || 'fc49c2b2-ea33-43e1-af59-20cfe89060fa',
+
   // --- Schedule ---
   dailyCron: process.env.DAILY_CRON || '30 6 * * 1-5',
   timezone: process.env.TIMEZONE || 'Asia/Jerusalem',
@@ -93,17 +101,26 @@ export function todayStamp() {
 }
 
 export function validateConfig() {
+  // In 'db' mode the page id is not used, so drop it from the required list.
   const required = [
     'anthropicKey',
     'notionKey',
-    'notionPageId',
     'beehiivKey',
     'beehiivPublicationId',
-  ];
+  ]
+  if (CONFIG.researchSource === 'page') required.push('notionPageId')
+  if (CONFIG.researchSource === 'db')   required.push('dailyResearchDsId')
+
   const missing = required.filter((k) => !CONFIG[k]);
   if (missing.length > 0) {
     throw new Error(
       `Missing required env vars: ${missing.join(', ')}. See .env.example.`
+    );
+  }
+
+  if (!['page', 'db'].includes(CONFIG.researchSource)) {
+    throw new Error(
+      `Invalid RESEARCH_SOURCE='${CONFIG.researchSource}'. Use 'page' or 'db'.`
     );
   }
 }

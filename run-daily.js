@@ -17,8 +17,15 @@
 import { writeFile, mkdir, readdir, stat, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { CONFIG, modeForToday, todayStamp, validateConfig } from './config.js';
-import { fetchTodayUpdate } from './lib/notion.js';
+import { fetchTodayUpdate as fetchFromPage } from './lib/notion.js';
+import { fetchTodayUpdateFromDB } from './lib/notion-db.js';
 import { pickSignal, draftIssue, scoreVirality, generateAmplifiers } from './lib/anthropic.js';
+
+// Pick the research reader based on CONFIG.researchSource ('page' default, 'db' opt-in).
+// Same contract either way: { date, dailyUpdate, weeklyMeta, raw, sourcePageId }.
+const fetchTodayUpdate = CONFIG.researchSource === 'db'
+  ? fetchTodayUpdateFromDB
+  : fetchFromPage;
 import { createDraft } from './lib/beehiiv.js';
 import { buildIssueHtml } from './lib/html-template.js';
 import { notifyReviewReady } from './lib/notify.js';

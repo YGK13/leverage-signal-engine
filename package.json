@@ -8,6 +8,7 @@
     "start": "node scheduler.js",
     "daily": "node run-daily.js",
     "test-notion": "node -e \"import('./lib/notion.js').then(m => m.fetchTodayUpdate().then(r => console.log(JSON.stringify(r,null,2))))\"",
+    "test-notion-db": "node -e \"import('./lib/notion-db.js').then(m => m.fetchTodayUpdateFromDB().then(r => console.log(JSON.stringify(r,null,2))))\"",
     "test-anthropic": "node -e \"import('./lib/anthropic.js').then(m => m.testCall().then(console.log))\"",
     "test-beehiiv": "node -e \"import('./lib/beehiiv.js').then(m => m.testConnection().then(console.log))\"",
     "test-full-dry": "node run-daily.js --dry-run",
