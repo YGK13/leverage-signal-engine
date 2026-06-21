@@ -19,6 +19,12 @@ export const CONFIG = {
   notifyTo: process.env.NOTIFY_EMAIL_TO,
   slackWebhook: process.env.SLACK_WEBHOOK_URL,
 
+  // --- CTA (call-to-action button in every issue) ---
+  // Claude generates a content-relevant label each day; URL stays fixed per env.
+  // Change CTA_DEFAULT_URL in .env to drive to whichever property fits the week.
+  ctaDefaultUrl: process.env.CTA_DEFAULT_URL || 'https://portlev.com',
+  ctaDefaultLabel: process.env.CTA_DEFAULT_LABEL || 'Book an AI HR Pilot',
+
   // --- Research source toggle ---
   // 'page' = original lib/notion.js reader (long-form Research Hub page)
   // 'db'   = lib/notion-db.js reader (Daily AI Signal database written by the

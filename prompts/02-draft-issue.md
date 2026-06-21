@@ -17,6 +17,8 @@ You return a single JSON object. The fields are:
 - `theMove` — the prescriptive close. 1-2 sentences. One specific, scoped action the reader can take this week. HTML allowed (links via `<a>`).
 - `pullQuote` — ONE line, under 220 chars, tweetable. Plain text. This is what people will screenshot.
 - `alternateSubjects` — array of 3 backup subject lines, scored from strongest to weakest by your own judgment.
+- `ctaLabel` — 3-6 words. Action-oriented button text tied directly to The Move. Lead with an outcome verb: "Book", "Get", "Run", "Download". Match the energy of The Move. Examples: "Book an AI HR Audit", "Get the Playbook", "Run the 20-min Pilot", "Download the Framework". Never generic ("Click here", "Learn more", "Find out more").
+- `ctaUrl` — use exactly the CTA_DEFAULT_URL provided in the input. Never invent, modify or shorten URLs.
 
 # STYLE RULES (strict)
 
