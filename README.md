@@ -1,5 +1,15 @@
 # Leverage Signal Engine
 
+> **Operators, founders, fractional execs: start at [PROTOCOL.md](./PROTOCOL.md).**
+> That is the canonical, ICP-facing doc: what the Signal is, who it is for,
+> the Beehiiv MCP path, install in 25 minutes, the morning flow.
+>
+> **Engineers: you are in the right place.** README is the architecture map.
+> [SETUP.md](./SETUP.md) is the click-by-click install. [TEACH.md](./TEACH.md)
+> is the deep teach.
+
+---
+
 Daily publishing automation for **The Leverage Signal** newsletter.
 
 Notion research catalog → Claude drafting → Beehiiv draft post → notification with review link.
