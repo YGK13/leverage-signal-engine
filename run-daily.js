@@ -15,6 +15,7 @@
 // ============================================================
 
 import { writeFile, mkdir, readdir, stat, rm } from 'node:fs/promises';
+import { exec } from 'node:child_process';
 import { join } from 'node:path';
 import { CONFIG, modeForToday, todayStamp, validateConfig } from './config.js';
 import { fetchTodayUpdate as fetchFromPage } from './lib/notion.js';
@@ -152,8 +153,13 @@ const FLAGS = parseFlags(process.argv);
     // ----- Cleanup old runs -----
     await pruneOldRuns(CONFIG.logRetentionDays);
 
+    // ----- Always open draft in browser (Windows fallback) -----
+    // Guarantees the draft is visible even when Beehiiv API + Resend both fail.
+    const htmlPath = join(runDir, '06-body.html');
+    await openInBrowser(htmlPath, { subject: draft.subjectLine, virality: virality.score });
+
     const elapsedSec = ((Date.now() - startedAt.getTime()) / 1000).toFixed(1);
-    log(`\n✅ DONE in ${elapsedSec}s. Draft awaiting your review at:\n   ${beehiivResult?.dashboardUrl}\n`);
+    log(`\n✅ DONE in ${elapsedSec}s. Draft open in browser. Paste into Beehiiv:\n   ${beehiivResult?.dashboardUrl}\n`);
     process.exit(0);
   } catch (e) {
     log(`\n❌ FAILED: ${e.message}`);
@@ -204,6 +210,38 @@ async function getIssueNumber() {
   } catch {
     return 1;
   }
+}
+
+async function openInBrowser(htmlPath, { subject, virality }) {
+  // Write a plain-text REVIEW.txt next to the HTML so key fields are scannable
+  // without opening JSON files.
+  const reviewPath = htmlPath.replace('06-body.html', 'REVIEW.txt');
+  const abs = htmlPath.replace(/\//g, '\\');
+  const reviewLines = [
+    `LEVERAGE SIGNAL — DRAFT READY`,
+    ``,
+    `Subject  : ${subject}`,
+    `Virality : ${virality}/10`,
+    ``,
+    `Paste target : https://app.beehiiv.com/posts/new`,
+    `HTML file    : ${abs}`,
+    ``,
+    `Open the HTML file in your browser, copy the body, paste into Beehiiv.`,
+  ].join('\n');
+
+  try {
+    await writeFile(reviewPath, reviewLines, 'utf8');
+  } catch {}
+
+  // Open the HTML in the default browser (Windows: start, Mac: open)
+  const cmd = process.platform === 'win32'
+    ? `start "" "${abs}"`
+    : `open "${htmlPath}"`;
+
+  exec(cmd, (err) => {
+    if (err) log(`  ⚠ Could not auto-open browser: ${err.message}`);
+    else log(`  ✓ Draft opened in browser. Copy body → paste into Beehiiv.`);
+  });
 }
 
 async function pruneOldRuns(maxDays) {
