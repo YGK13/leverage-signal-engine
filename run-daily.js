@@ -36,7 +36,7 @@ const FLAGS = parseFlags(process.argv);
 (async () => {
   const startedAt = new Date();
   const date = todayStamp();
-  const mode = modeForToday(startedAt);
+  const mode = FLAGS.modeOverride || modeForToday(startedAt);
   const runDir = join('runs', date);
 
   log(`[${date}] Mode: ${mode}. Starting pipeline. dryRun=${FLAGS.dryRun}`);
@@ -188,9 +188,11 @@ const FLAGS = parseFlags(process.argv);
 // ----- Helpers --------------------------------------------------------------
 
 function parseFlags(argv) {
+  const modeFlag = argv.find((a) => a.startsWith('--mode='));
   return {
     dryRun: argv.includes('--dry-run'),
     forceRerun: argv.includes('--force-rerun'),
+    modeOverride: modeFlag ? modeFlag.split('=')[1].toUpperCase() : null,
   };
 }
 

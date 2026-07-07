@@ -4,3 +4,5 @@ node_modules/
 runs/
 *.log
 .DS_Store
+
+.vercel

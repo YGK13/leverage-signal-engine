@@ -70,10 +70,11 @@ export const CONFIG = {
   },
 
   // --- Word count targets per mode ---
+  // All modes match SIGNAL length — subscribers expect consistent depth every day.
   wordCounts: {
-    SIGNAL: { min: 280, target: 350, max: 420 },
-    BUILD:  { min: 350, target: 450, max: 550 },
-    READ:   { min: 200, target: 260, max: 320 },
+    SIGNAL: { min: 320, target: 380, max: 450 },
+    BUILD:  { min: 320, target: 380, max: 450 },
+    READ:   { min: 320, target: 380, max: 450 },
   },
 
   // --- Quality gates ---

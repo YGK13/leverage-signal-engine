@@ -48,9 +48,10 @@ For mode BUILD:
 - ¶4 (the path): how to deploy it this week in 60-120 minutes.
 
 For mode READ:
-- ¶1 (the piece): what it is, who wrote it, where to find it. One link.
-- ¶2 (the read): two to three sentences on why this matters for the operator now.
-- (Keep total shorter — see word count.)
+- ¶1 (the piece): what it is, who wrote it, where to find it. One link. Specific numbers on the author's credentials or reach.
+- ¶2 (the trap): how most operators will skim or skip this piece. Why that is a mistake.
+- ¶3 (the contrarian read): the one insight from this piece that changes how you run something — margin, headcount, cycle time, P&L.
+- ¶4 (the consequence): what happens to operators who don't read it this week. Concrete and specific.
 
 # OUTPUT
 
