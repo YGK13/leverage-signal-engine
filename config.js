@@ -57,8 +57,7 @@ export const CONFIG = {
     {
       id: 'caio-course',
       label: 'Start the CAIO course',
-      // TODO(yuri): confirm the exact CAIO course URL; learn.portlev.com is a placeholder.
-      url: 'https://learn.portlev.com',
+      url: 'https://learn.portlev.com/program',
       blurb:
         'Become the Chief AI Officer your company already needs. The CAIO course is the operator playbook for owning AI strategy end to end.',
     },
@@ -106,10 +105,9 @@ export const CONFIG = {
     url: 'https://leveragesignal.beehiiv.com',
     // Home destination for the logo click and the brand wordmark.
     homeUrl: 'https://portlev.com',
-    // Hosted PNG for the logo in the email header. Email clients cannot render
-    // local files or inline SVG reliably, so this must be a public URL.
-    // Empty string = fall back to a gold "PortLev" text wordmark (always clickable).
-    logoUrl: process.env.BRAND_LOGO_URL || '',
+    // Logo: email clients cannot render local files or inline SVG reliably.
+    // Using the gold "PortLev" text wordmark (always clickable, no image needed).
+    logoUrl: '',
     reply: 'Reply to this email; I read every one.',
     colors: {
       ink: '#0A0A0A',
