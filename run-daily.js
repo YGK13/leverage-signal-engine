@@ -17,7 +17,7 @@
 import { writeFile, mkdir, readdir, stat, rm } from 'node:fs/promises';
 import { exec } from 'node:child_process';
 import { join } from 'node:path';
-import { CONFIG, modeForToday, todayStamp, validateConfig } from './config.js';
+import { CONFIG, modeForToday, todayStamp, validateConfig, ctaForToday, withUtm } from './config.js';
 import { fetchTodayUpdate as fetchFromPage } from './lib/notion.js';
 import { fetchTodayUpdateFromDB } from './lib/notion-db.js';
 import { pickSignal, draftIssue, scoreVirality, generateAmplifiers } from './lib/anthropic.js';
@@ -39,7 +39,13 @@ const FLAGS = parseFlags(process.argv);
   const mode = FLAGS.modeOverride || modeForToday(startedAt);
   const runDir = join('runs', date);
 
-  log(`[${date}] Mode: ${mode}. Starting pipeline. dryRun=${FLAGS.dryRun}`);
+  // One CTA per issue (rotated by day, or forced with --cta=<id>). Position is
+  // top / bottom / both (default from config, or --cta-position=).
+  const cta = ctaForToday(startedAt, FLAGS.ctaOverride);
+  const ctaPosition = FLAGS.ctaPosition || CONFIG.ctaPosition;
+  const campaign = `${date}_${cta.id}`;
+
+  log(`[${date}] Mode: ${mode}. CTA: ${cta.id} @ ${ctaPosition}. Starting pipeline. dryRun=${FLAGS.dryRun}`);
 
   try {
     validateConfig();
@@ -72,7 +78,16 @@ const FLAGS = parseFlags(process.argv);
       mode,
       date,
       dailyUpdate: research.dailyUpdate,
+      cta,
     });
+
+    // Attach the resolved, UTM-tagged CTA + always-present call link. The system
+    // owns the button label/url (not the model), so testing stays clean.
+    draft.ctaLabel = cta.label;
+    draft.ctaUrl = withUtm(cta.url, campaign);
+    draft.ctaPosition = ctaPosition;
+    draft.bookCallLabel = CONFIG.bookCall.label;
+    draft.bookCallUrl = withUtm(CONFIG.bookCall.url, `${campaign}_call`);
     await writeJson(runDir, '03-draft.json', draft);
     log(`  ✓ draft headline: "${draft.headlineWhite} ${draft.headlineGold || ''}"`);
 
@@ -189,10 +204,14 @@ const FLAGS = parseFlags(process.argv);
 
 function parseFlags(argv) {
   const modeFlag = argv.find((a) => a.startsWith('--mode='));
+  const ctaFlag = argv.find((a) => a.startsWith('--cta='));
+  const posFlag = argv.find((a) => a.startsWith('--cta-position='));
   return {
     dryRun: argv.includes('--dry-run'),
     forceRerun: argv.includes('--force-rerun'),
     modeOverride: modeFlag ? modeFlag.split('=')[1].toUpperCase() : null,
+    ctaOverride: ctaFlag ? ctaFlag.split('=')[1] : null,
+    ctaPosition: posFlag ? posFlag.split('=')[1].toLowerCase() : null,
   };
 }
 
