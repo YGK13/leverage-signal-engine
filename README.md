@@ -1,5 +1,11 @@
 # Leverage Signal Engine
 
+> **SUPERSEDED by [leverage-signal-automation](https://github.com/YGK13/leverage-signal-automation)**
+> (GitHub Actions + Claude Code). This repo is historical and no longer runs the
+> newsletter. The Vercel cron path here is non-functional (`vercel/api/cron/daily.js`
+> imports a module that does not exist). Its useful pieces (Beehiiv draft creation with
+> tags, per-edition UTM tagging) are being ported to leverage-signal-automation.
+
 > **Operators, founders, fractional execs: start at [PROTOCOL.md](./PROTOCOL.md).**
 > That is the canonical, ICP-facing doc: what the Signal is, who it is for,
 > the Beehiiv MCP path, install in 25 minutes, the morning flow.
