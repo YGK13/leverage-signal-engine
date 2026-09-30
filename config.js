@@ -9,7 +9,7 @@ loadEnv({ override: true }); // override: true so process env blanks don't block
 export const CONFIG = {
   // --- API keys (from .env) ---
   anthropicKey: process.env.ANTHROPIC_API_KEY,
-  anthropicModel: process.env.ANTHROPIC_MODEL || 'claude-opus-4-7',
+  anthropicModel: process.env.ANTHROPIC_MODEL || 'claude-opus-5-5',
   notionKey: process.env.NOTION_API_KEY,
   notionPageId: process.env.NOTION_PAGE_ID,
   beehiivKey: process.env.BEEHIIV_API_KEY,

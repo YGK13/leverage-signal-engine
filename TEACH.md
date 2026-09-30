@@ -332,11 +332,11 @@ Set `ANTHROPIC_MODEL` in your `.env`:
 
 | Model | Speed | Cost per run | Quality | Use case |
 |-------|-------|-------------|---------|----------|
-| `claude-opus-4-7` | Slower (~30s) | ~$0.10-0.15 | Best | Production daily runs |
-| `claude-sonnet-4-5` | Faster (~10s) | ~$0.02-0.04 | Very good | Iteration, testing, budget runs |
-| `claude-haiku-3-5` | Fastest (<5s) | ~$0.005 | Good for picking only | Not recommended for full drafts |
+| `claude-opus-5-5` | Slower (~30s) | ~$0.10-0.15 | Best | Production daily runs |
+| `claude-sonnet-5` | Faster (~10s) | ~$0.02-0.04 | Very good | Iteration, testing, budget runs |
+| `claude-haiku-4-5-20251001` | Fastest (<5s) | ~$0.005 | Good for picking only | Not recommended for full drafts |
 
-**Recommendation:** use `claude-opus-4-7` for production. Use `claude-sonnet-4-5` while you are calibrating prompts to avoid burning credits on test runs.
+**Recommendation:** use `claude-opus-5-5` for production. Use `claude-sonnet-5` while you are calibrating prompts to avoid burning credits on test runs.
 
 ---
 
@@ -471,21 +471,21 @@ A single full pipeline run makes 4 API calls:
 - Prompt 3 (virality score): ~1,800 input tokens, ~600 output tokens
 - Prompt 4 (social posts): ~1,400 input tokens, ~800 output tokens
 
-**With claude-opus-4-7 (as of June 2026):**
+**With claude-opus-5-5 (costs below were measured on claude-opus-4-7, June 2026; re-measure):**
 - Input: ~$15/M tokens
 - Output: ~$75/M tokens
 - Per run: approximately $0.10-0.15
 - Per month (20 runs): approximately $2.50-3.50
 
-**With claude-sonnet-4-5:**
+**With claude-sonnet-5:**
 - Per run: approximately $0.02-0.04
 - Per month: approximately $0.50-1.00
 
 ---
 
-### Important: `temperature` Is Deprecated on claude-opus-4-7
+### Important: `temperature` Is Not Accepted on Current Models
 
-The `temperature` parameter is not accepted by `claude-opus-4-7` or newer Anthropic models. Passing it causes a 400 error.
+The `temperature` parameter is not accepted by `claude-opus-4-7` and newer Anthropic models (including `claude-opus-5-5` and `claude-sonnet-5`). Passing it causes a 400 error.
 
 The `lib/anthropic.js` `call()` function correctly omits `temperature`. If you add your own API calls elsewhere in the codebase, do not include `temperature`. The `pickSignal` and `draftIssue` functions in the original source have `temperature` in their call sites but the wrapper strips it — this is intentional.
 
@@ -599,7 +599,7 @@ This installs: `@anthropic-ai/sdk`, `@notionhq/client`, `axios`, `dotenv` and `n
 ```env
 # Anthropic
 ANTHROPIC_API_KEY=sk-ant-REPLACE_ME
-ANTHROPIC_MODEL=claude-opus-4-7
+ANTHROPIC_MODEL=claude-opus-5-5
 
 # Notion
 NOTION_API_KEY=ntn_REPLACE_ME
@@ -680,7 +680,7 @@ npm run test-anthropic
 ```
 Expected:
 ```json
-{ "ok": true, "model": "claude-opus-4-7", "response": "OK" }
+{ "ok": true, "model": "claude-opus-5-5", "response": "OK" }
 ```
 If you get `401 Unauthorized`: the API key is wrong or has a leading space. Check your `.env`.
 
@@ -1035,7 +1035,7 @@ If your scores are consistently 6-7 after 5+ runs, the issue is in the prompts, 
 
 ---
 
-### `temperature deprecated` Error on claude-opus-4-7
+### `temperature deprecated` Error on current models
 
 **Cause:** You added a `temperature` parameter to a `client.messages.create()` call. The parameter is not accepted by claude-opus-4-7 and newer models.
 
@@ -1089,7 +1089,7 @@ If your scores are consistently 6-7 after 5+ runs, the issue is in the prompts, 
 **Fixes in order:**
 1. Increase `maxTokens` in the `call()` invocation for the failing step (prompt 2 is already at 4096 — if truncated, increase to 8192).
 2. Add "IMPORTANT: Return ONLY the raw JSON object. Start with `{`. End with `}`. No markdown. No explanation." to the end of the offending prompt file.
-3. Switch to `claude-opus-4-7` if using Sonnet — Opus is significantly more reliable on structured JSON output.
+3. Switch to `claude-opus-5-5` if using Sonnet — Opus is significantly more reliable on structured JSON output.
 
 ---
 
@@ -1105,7 +1105,7 @@ This is not an error — it is a calibration signal. See the troubleshooting tab
 
 ```
 ANTHROPIC_API_KEY          ← from console.anthropic.com (starts with sk-ant-)
-ANTHROPIC_MODEL            ← claude-opus-4-7 (production) or claude-sonnet-4-5 (testing)
+ANTHROPIC_MODEL            ← claude-opus-5-5 (production) or claude-sonnet-5 (testing)
 NOTION_API_KEY             ← from notion.so/profile/integrations (starts with ntn_)
 NOTION_PAGE_ID             ← 32-char hex from your Research Catalog page URL
 BEEHIIV_API_KEY            ← from Beehiiv Settings → Integrations → API

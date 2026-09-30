@@ -74,7 +74,7 @@ Open `.env` and fill in:
 ## 4. Verify each connection (smoke tests)
 
 ```bash
-npm run test-anthropic   # Should print: { ok: true, model: 'claude-opus-4-7', response: 'OK' }
+npm run test-anthropic   # Should print: { ok: true, model: 'claude-opus-5-5', response: 'OK' }
 npm run test-notion      # Should print today's daily update from the catalog
 npm run test-beehiiv     # Should print: { ok: true, publicationName: 'The Leverage Signal' }
 ```

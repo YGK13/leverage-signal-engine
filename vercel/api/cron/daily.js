@@ -17,8 +17,11 @@ export const config = {
 
 export default async function handler(req, res) {
   // Vercel Cron sends a Bearer token from CRON_SECRET env var
+  // Fail closed: with CRON_SECRET unset this route must NOT run the (paid)
+  // pipeline for anyone who calls it.
+  const expected = process.env.CRON_SECRET;
   const auth = req.headers.authorization || '';
-  if (process.env.CRON_SECRET && auth !== `Bearer ${process.env.CRON_SECRET}`) {
+  if (!expected || auth !== `Bearer ${expected}`) {
     return res.status(401).json({ ok: false, error: 'unauthorized' });
   }
 
